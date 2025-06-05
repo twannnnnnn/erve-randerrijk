@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dierenprofiel – Naam Stemmen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .profiel {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    h2 {
+      margin-top: 10px;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+    }
+
+    .naam-lijst {
+      max-width: 400px;
+      margin: 20px auto;
+      text-align: left;
+    }
+
+    .naam-item {
+      background: #eee;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+
+    #stemForm {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profiel">
+    <img src="https://www.nieuwekat.nl/wp-content/uploads/2023/04/europees-korthaar-Depositphotos_13936804_S.jpg" alt="Dier foto">
+    <h2 id="dierNaam">Naam: onbekend</h2>
+    <p><strong>Soort:</strong> Kat</p>
+    <p><strong>Beschrijving:</strong> Deze kat houdt van zonnen en knuffelen.</p>
+
+    <div id="stemSectie">
+      <h3>Naam stemmen</h3>
+      <p>Typ de naam die jij het leukste vindt voor dit dier. Je mag dit maar één keer doen (tenzij je admin bent).</p>
+      <input type="text" id="nieuweNaam" placeholder="Bijv. Tijgertje"><br>
+      <input type="password" id="adminCode" placeholder="(optioneel) geheime code"><br>
+      <button onclick="verwerkStem()">Verzenden</button>
+
+      <div class="naam-lijst" id="naamLijst"></div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_CODE = "geheim123"; // ← pas dit aan voor eigen gebruik
+    const STEM_KEY = "stemmen_kat_1"; // unieker per dier maken
+    const GESTEMD_KEY = "heeftGestemd_kat_1";
+    let stemmen = JSON.parse(localStorage.getItem(STEM_KEY)) || {};
+
+    function verwerkStem() {
+      const input = document.getElementById('nieuweNaam');
+      const adminInput = document.getElementById('adminCode');
+      const naam = input.value.trim();
+      const code = adminInput.value.trim();
+      const isAdmin = code === ADMIN_CODE;
+      const heeftGestemd = localStorage.getItem(GESTEMD_KEY) === "ja";
+
+      if (naam === '') return;
+
+      if (heeftGestemd && !isAdmin) {
+        alert("Je hebt al een naam ingestuurd.");
+        return;
+      }
+
+      const naamKlein = naam.toLowerCase();
+      if (!stemmen[naamKlein]) {
+        stemmen[naamKlein] = {
+          naamOrigineel: naam,
+          aantal: 1
+        };
+      } else {
+        stemmen[naamKlein].aantal++;
+      }
+
+      localStorage.setItem(STEM_KEY, JSON.stringify(stemmen));
+      if (!isAdmin) localStorage.setItem(GESTEMD_KEY, "ja");
+
+      input.value = '';
+      adminInput.value = '';
+      toonStemmen();
+      checkOfNaamVaststaat();
+    }
+
+    function toonStemmen() {
+      const lijst = document.getElementById('naamLijst');
+      lijst.innerHTML = '';
+      const gesorteerd = Object.values(stemmen).sort((a, b) => b.aantal - a.aantal);
+      for (const item of gesorteerd) {
+        const div = document.createElement('div');
+        div.className = 'naam-item';
+        div.textContent = `${item.naamOrigineel} – ${item.aantal} stem(men)`;
+        lijst.appendChild(div);
+      }
+    }
+
+    function checkOfNaamVaststaat() {
+      const namen = Object.values(stemmen);
+      const hoogste = namen.find(n => n.aantal >= 3); // Pas dit getal aan als nodig
+      if (hoogste) {
+        document.getElementById("dierNaam").textContent = "Naam: " + hoogste.naamOrigineel;
+        document.getElementById("stemSectie").innerHTML = `<p>De naam is gekozen: <strong>${hoogste.naamOrigineel}</strong> 🎉</p>`;
+      } else {
+        toonStemmen();
+      }
+    }
+
+    // Start bij laden
+    checkOfNaamVaststaat();
+  </script>
+
+</body>
+</html>

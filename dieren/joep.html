@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dierenprofiel – Naam Stemmen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .profiel {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .dier-foto {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .foto-galerij {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .foto-galerij img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+    }
+
+    .naam-lijst {
+      max-width: 400px;
+      margin: 20px auto;
+      text-align: left;
+    }
+
+    .naam-item {
+      background: #eee;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profiel">
+    <img id="hoofdfoto" class="dier-foto" src="" alt="Dier foto">
+    <h2 id="dierNaam">Naam: Joep</h2>
+    <p><strong>Soort:</strong> <span id="dierSoort"></span></p>
+    <p id="dierBeschrijving"></p>
+
+    <div class="foto-galerij" id="meerFotos"></div>
+
+  <script>
+    // 📌 DIT KUN JE AANPASSEN
+    const dier = {
+      soort: "Paart",
+      beschrijving: "Joep is heel eige wijz",
+      fotos: ["https://th.bing.com/th/id/OIP.zL_iSyqgPIPQklF2JmEp7gHaFk?w=312&h=187&c=7&r=0&o=5&pid=1.7"]
+    };
+
+    // 📸 Vul gegevens in
+    document.getElementById("hoofdfoto").src = dier.fotos[0];
+    document.getElementById("dierSoort").textContent = dier.soort;
+    document.getElementById("dierBeschrijving").textContent = dier.beschrijving;
+  </script>
+
+</body>
+</html>
